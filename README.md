@@ -28,7 +28,7 @@ CTC quantities. The prefix mode accepts exact rational frame laws and audits
 permanent path pruning. They use separate APIs and report formats; a rational
 prefix result is not a claim that the original floating-point output is exact.
 
-The current suite has 34 Python tests and six Node/actual-Chrome tests,
+The current suite has 39 Python tests and six Node/actual-Chrome tests,
 including the earlier target-atlas checks. Each mode has its own installed-
 package reproduction command below.
 
@@ -75,3 +75,36 @@ bash tools/prefix_wheel_smoke.sh
 ```
 
 The prefix interface accepts 2-4 symbols, 0-6 independent categorical frames and width 1-64. Every rational row sums exactly to one. Reports retain every positive candidate, transition and final transcript. Editing clears stale browser evidence. See [PREFIX.md](PREFIX.md) for recurrence, conservation proof, the L > R + D bound, source-variant boundaries, controls and independent checks.
+
+## Compare decisions under token edit loss
+
+The additive native candidate-risk mode computes the full rational CTC transcript
+law without beam pruning, then reports each supplied candidate's expected token
+edit count, sentence-error risk, every support distance and loss-mass histogram.
+It keeps all minimum-risk ties. Candidates can have zero posterior mass.
+
+```python
+from ctclab.risk import audit_risk
+report = audit_risk({
+    "symbols": ["_", "A", "B"], "blank": 0,
+    "frames": [["1/7", "3/7", "3/7"],
+               ["1/16", "3/8", "9/16"],
+               ["9/20", "1/10", "9/20"]],
+    "candidates": [[2], [1, 2]],
+})
+assert report["map_transcripts"] == [[1, 2]]
+assert report["minimum_candidate_indices"] == [0]
+```
+
+In this selected synthetic law, A,B has greater posterior mass than B
+(729/2240 versus 171/560), but B has lower expected token edit count
+(127/160 versus 449/560). These are different loss functions, not evidence
+that either decision improves real recognition. The finite decision set is
+explicit: only supplied candidates compete, not every possible transcript.
+Token edit count is not length-normalized word error rate.
+
+The mode accepts at most 32 distinct candidates of length at most six, and uses
+the existing bounded rational frame contract. It does not change either earlier
+mode or add a browser panel. Run `python -m ctclab.risk_cli --input request.json --output report.json` for strict JSON input and atomic file output.
+See [RISK.md](RISK.md) for the objective, limits, selected-control provenance,
+source and independent checks.
