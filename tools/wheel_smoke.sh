@@ -15,3 +15,14 @@ r=Path(sys.argv[1]);assert json.load(open('cli.json'))==audit(json.load(open(r/'
 assert json.load(open('cli.json'))['oracle']['matched_count']==1
 print('Installed console CLI, repeated-label probability, all 20 reports and four module origins passed')
 PY
+
+"$tmp/env/bin/python" -I "$root/tests/test_risk.py" -v
+"$tmp/env/bin/python" -I - "$root" <<'PYRISK'
+import importlib.util, json, sys
+from pathlib import Path
+root = Path(sys.argv[1]).resolve()
+origins = {m: importlib.util.find_spec(m).origin for m in ['ctclab.risk', 'ctclab.risk_cli']}
+for path in origins.values():
+    assert 'site-packages' in path and not Path(path).resolve().is_relative_to(root)
+print(json.dumps({'candidate_risk_installed_origins': origins}))
+PYRISK
