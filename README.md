@@ -1,4 +1,4 @@
-# CTCLab
+# Ctc alignment
 
 Inspect how CTC combines frame paths into transcript probabilities. The target
 atlas shows alignment posteriors and logit gradients with an exhaustive
@@ -8,7 +8,7 @@ pruning keeps and discards.
 Both use small supplied synthetic controls. There is no acoustic model,
 speech dataset or recognition-quality claim.
 
-[Live atlas](https://midya8.github.io/ctclab/) | [Equations, limits and sources](METHOD.md)
+[Live atlas](https://midya8.github.io/ctc-alignment/) | [Equations, limits and sources](METHOD.md)
 
 CTC is established work by Graves et al. This project makes its hidden sums inspectable. It does not train an acoustic model, use speech data, call a model API, or claim recognition-quality improvements.
 
@@ -64,7 +64,7 @@ No production-scale, speed, speech/OCR quality, causal-importance or new-algorit
 
 ## Inspect rational prefix pruning
 
-[Open the rational prefix inspector](https://midya8.github.io/ctclab/prefix.html) · [Method, proof and limits](PREFIX.md)
+[Open the rational prefix inspector](https://midya8.github.io/ctc-alignment/prefix.html) · [Method, proof and limits](PREFIX.md)
 
 The original floating-point target atlas stays unchanged. The separate mode audits finite CTC prefix pruning with exact supplied rational frame laws: blank/nonblank transitions, surviving and discarded path mass, greedy versus full transcript MAP, and a sufficient unique-MAP bound. An independent native checker enumerates paths; the browser uses a separate BigInt engine. Twelve original controls include a selected case where width 4 chooses a lower-probability transcript than width 3. This is a tiny bounded search audit, not a trained recognizer, held-out speech result, new CTC algorithm, confidence estimate or scalable decoder. Strict permanent path pruning deliberately does not restore previously discarded contributions.
 
